@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import cytoscape from "cytoscape";
 import type { GraphData, GraphEdge } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
@@ -15,14 +15,38 @@ interface GraphViewProps {
 export default function GraphView({ data, loading, searchQuery, onEdgeClick }: GraphViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const cyRef = useRef<cytoscape.Core | null>(null);
+  const layoutRef = useRef<cytoscape.Layouts | null>(null);
+  const [graphReady, setGraphReady] = useState(false);
+
+  // Safely destroy the current Cytoscape instance
+  const destroyCy = useCallback(() => {
+    if (layoutRef.current) {
+      try {
+        layoutRef.current.stop();
+      } catch {
+        // layout may already be stopped
+      }
+      layoutRef.current = null;
+    }
+    if (cyRef.current) {
+      try {
+        cyRef.current.destroy();
+      } catch {
+        // instance may already be destroyed
+      }
+      cyRef.current = null;
+    }
+    setGraphReady(false);
+  }, []);
 
   const buildGraph = useCallback(() => {
-    if (!containerRef.current || !data) return;
-
-    // Destroy previous instance
-    if (cyRef.current) {
-      cyRef.current.destroy();
+    if (!containerRef.current || !data || data.nodes.length === 0) {
+      destroyCy();
+      return;
     }
+
+    // Destroy previous instance before building a new one
+    destroyCy();
 
     const maxNodeSpending = Math.max(
       ...data.nodes.map((n) => n.total_spending || n.total_received || 1)
@@ -159,16 +183,8 @@ export default function GraphView({ data, loading, searchQuery, onEdgeClick }: G
           },
         },
       ],
-      layout: {
-        name: "cose",
-        animate: true,
-        animationDuration: 1000,
-        nodeRepulsion: () => 10000,
-        idealEdgeLength: () => 140,
-        gravity: 0.25,
-        numIter: 600,
-        padding: 50,
-      },
+      // Don't run layout automatically — we'll run it manually so we can track the reference
+      layout: { name: "preset" },
       minZoom: 0.2,
       maxZoom: 3.5,
       wheelSensitivity: 0.25,
@@ -217,22 +233,44 @@ export default function GraphView({ data, loading, searchQuery, onEdgeClick }: G
     });
 
     cyRef.current = cy;
-  }, [data, onEdgeClick]);
+
+    // Run the layout manually so we can track and stop it on cleanup
+    const layout = cy.layout({
+      name: "cose",
+      animate: true,
+      animationDuration: 1000,
+      nodeRepulsion: () => 10000,
+      idealEdgeLength: () => 140,
+      gravity: 0.25,
+      numIter: 600,
+      padding: 50,
+    } as cytoscape.LayoutOptions);
+
+    layoutRef.current = layout;
+    layout.run();
+
+    // Mark graph as ready once layout completes
+    layout.on("layoutstop", () => {
+      setGraphReady(true);
+      layoutRef.current = null;
+    });
+  }, [data, onEdgeClick, destroyCy]);
 
   useEffect(() => {
-    buildGraph();
+    if (!loading) {
+      buildGraph();
+    }
     return () => {
-      if (cyRef.current) {
-        cyRef.current.destroy();
-      }
+      destroyCy();
     };
-  }, [buildGraph]);
+  }, [buildGraph, loading, destroyCy]);
 
   // Search highlighting
   useEffect(() => {
-    if (!cyRef.current || !searchQuery) {
+    if (!cyRef.current) return;
+    if (!searchQuery) {
       cyRef.current
-        ?.elements()
+        .elements()
         .removeClass("faded")
         .removeClass("highlighted")
         .removeClass("edge-highlighted");
@@ -250,10 +288,22 @@ export default function GraphView({ data, loading, searchQuery, onEdgeClick }: G
     });
   }, [searchQuery]);
 
-  if (loading) {
-    return (
-      <div className="graph-container w-full" style={{ height: "600px" }}>
-        <div className="flex items-center justify-center h-full">
+  const showLoading = loading;
+  const showEmpty = !loading && (!data || data.nodes.length === 0);
+  const showGraph = !loading && data && data.nodes.length > 0;
+
+  return (
+    <div className="graph-container w-full relative" style={{ height: "600px" }} id="graph-view">
+      {/* Always-mounted Cytoscape container — hidden when not in use */}
+      <div
+        ref={containerRef}
+        className="w-full h-full"
+        style={{ display: showGraph ? "block" : "none" }}
+      />
+
+      {/* Loading overlay */}
+      {showLoading && (
+        <div className="flex items-center justify-center h-full absolute inset-0">
           <div className="text-center">
             <div
               className="w-12 h-12 border-2 border-t-transparent rounded-full animate-spin mx-auto mb-4"
@@ -270,14 +320,11 @@ export default function GraphView({ data, loading, searchQuery, onEdgeClick }: G
             </p>
           </div>
         </div>
-      </div>
-    );
-  }
+      )}
 
-  if (!data || data.nodes.length === 0) {
-    return (
-      <div className="graph-container w-full" style={{ height: "600px" }}>
-        <div className="flex items-center justify-center h-full">
+      {/* Empty state overlay */}
+      {showEmpty && (
+        <div className="flex items-center justify-center h-full absolute inset-0">
           <div className="text-center">
             <svg
               className="w-16 h-16 mx-auto mb-4"
@@ -297,50 +344,48 @@ export default function GraphView({ data, loading, searchQuery, onEdgeClick }: G
             </p>
           </div>
         </div>
-      </div>
-    );
-  }
+      )}
 
-  return (
-    <div className="graph-container w-full relative" style={{ height: "600px" }} id="graph-view">
-      <div ref={containerRef} className="w-full h-full" />
-
-      {/* Legend */}
-      <div className="graph-legend">
-        <div className="legend-item">
-          <div className="legend-dot" style={{ background: "#3b82f6" }} />
-          <span>Agency</span>
+      {/* Legend — shown when graph is visible */}
+      {showGraph && (
+        <div className="graph-legend">
+          <div className="legend-item">
+            <div className="legend-dot" style={{ background: "#3b82f6" }} />
+            <span>Agency</span>
+          </div>
+          <div className="legend-item">
+            <div className="legend-dot" style={{ background: "#10b981" }} />
+            <span>Vendor</span>
+          </div>
+          <div
+            className="mt-2 pt-2"
+            style={{ borderTop: "1px solid var(--border-primary)" }}
+          >
+            <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+              {data.nodes.length} nodes · {data.edges.length} edges
+            </p>
+            <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
+              Click edges for details
+            </p>
+          </div>
         </div>
-        <div className="legend-item">
-          <div className="legend-dot" style={{ background: "#10b981" }} />
-          <span>Vendor</span>
-        </div>
-        <div
-          className="mt-2 pt-2"
-          style={{ borderTop: "1px solid var(--border-primary)" }}
-        >
-          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-            {data.nodes.length} nodes · {data.edges.length} edges
-          </p>
-          <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
-            Click edges for details
-          </p>
-        </div>
-      </div>
+      )}
 
       {/* Graph controls hint */}
-      <div
-        className="absolute top-3 right-3 px-3 py-1.5 rounded-lg"
-        style={{
-          background: "rgba(10, 14, 23, 0.8)",
-          backdropFilter: "blur(8px)",
-          border: "1px solid var(--border-primary)",
-        }}
-      >
-        <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-          🖱️ Scroll to zoom · Drag to pan · Hover to highlight
-        </p>
-      </div>
+      {showGraph && (
+        <div
+          className="absolute top-3 right-3 px-3 py-1.5 rounded-lg"
+          style={{
+            background: "rgba(10, 14, 23, 0.8)",
+            backdropFilter: "blur(8px)",
+            border: "1px solid var(--border-primary)",
+          }}
+        >
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+            🖱️ Scroll to zoom · Drag to pan · Hover to highlight
+          </p>
+        </div>
+      )}
     </div>
   );
 }
