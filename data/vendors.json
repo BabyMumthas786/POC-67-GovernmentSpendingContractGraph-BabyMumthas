@@ -1,0 +1,602 @@
+[
+  {
+    "vendor_id": "V001",
+    "vendor_name": "Lockheed Martin",
+    "industry": "Defense & Aerospace",
+    "headquarters": "Bethesda, MD"
+  },
+  {
+    "vendor_id": "V002",
+    "vendor_name": "Boeing",
+    "industry": "Defense & Aerospace",
+    "headquarters": "Arlington, VA"
+  },
+  {
+    "vendor_id": "V003",
+    "vendor_name": "Raytheon Technologies",
+    "industry": "Defense & Aerospace",
+    "headquarters": "Waltham, MA"
+  },
+  {
+    "vendor_id": "V004",
+    "vendor_name": "General Dynamics",
+    "industry": "Defense & Aerospace",
+    "headquarters": "Reston, VA"
+  },
+  {
+    "vendor_id": "V005",
+    "vendor_name": "Northrop Grumman",
+    "industry": "Defense & Aerospace",
+    "headquarters": "Falls Church, VA"
+  },
+  {
+    "vendor_id": "V006",
+    "vendor_name": "IBM",
+    "industry": "Technology",
+    "headquarters": "Armonk, NY"
+  },
+  {
+    "vendor_id": "V007",
+    "vendor_name": "Accenture Federal Services",
+    "industry": "IT & Consulting",
+    "headquarters": "Arlington, VA"
+  },
+  {
+    "vendor_id": "V008",
+    "vendor_name": "Deloitte",
+    "industry": "Consulting",
+    "headquarters": "New York, NY"
+  },
+  {
+    "vendor_id": "V009",
+    "vendor_name": "Booz Allen Hamilton",
+    "industry": "Consulting & IT",
+    "headquarters": "McLean, VA"
+  },
+  {
+    "vendor_id": "V010",
+    "vendor_name": "Leidos",
+    "industry": "IT & Defense",
+    "headquarters": "Reston, VA"
+  },
+  {
+    "vendor_id": "V011",
+    "vendor_name": "SAIC",
+    "industry": "IT & Engineering",
+    "headquarters": "Reston, VA"
+  },
+  {
+    "vendor_id": "V012",
+    "vendor_name": "BAE Systems",
+    "industry": "Defense & Aerospace",
+    "headquarters": "Falls Church, VA"
+  },
+  {
+    "vendor_id": "V013",
+    "vendor_name": "L3Harris Technologies",
+    "industry": "Defense & Technology",
+    "headquarters": "Melbourne, FL"
+  },
+  {
+    "vendor_id": "V014",
+    "vendor_name": "ManTech International",
+    "industry": "IT & Cybersecurity",
+    "headquarters": "Herndon, VA"
+  },
+  {
+    "vendor_id": "V015",
+    "vendor_name": "CACI International",
+    "industry": "IT & Intelligence",
+    "headquarters": "Arlington, VA"
+  },
+  {
+    "vendor_id": "V016",
+    "vendor_name": "Peraton",
+    "industry": "IT & Defense",
+    "headquarters": "Herndon, VA"
+  },
+  {
+    "vendor_id": "V017",
+    "vendor_name": "Amazon Web Services",
+    "industry": "Cloud & IT",
+    "headquarters": "Seattle, WA"
+  },
+  {
+    "vendor_id": "V018",
+    "vendor_name": "Microsoft",
+    "industry": "Technology",
+    "headquarters": "Redmond, WA"
+  },
+  {
+    "vendor_id": "V019",
+    "vendor_name": "Palantir Technologies",
+    "industry": "Data Analytics",
+    "headquarters": "Denver, CO"
+  },
+  {
+    "vendor_id": "V020",
+    "vendor_name": "CGI Federal",
+    "industry": "IT & Consulting",
+    "headquarters": "Fairfax, VA"
+  },
+  {
+    "vendor_id": "V021",
+    "vendor_name": "UnitedHealth Group",
+    "industry": "Healthcare",
+    "headquarters": "Minnetonka, MN"
+  },
+  {
+    "vendor_id": "V022",
+    "vendor_name": "Humana",
+    "industry": "Healthcare",
+    "headquarters": "Louisville, KY"
+  },
+  {
+    "vendor_id": "V023",
+    "vendor_name": "McKesson Corporation",
+    "industry": "Healthcare & Pharma",
+    "headquarters": "Irving, TX"
+  },
+  {
+    "vendor_id": "V024",
+    "vendor_name": "KBR Inc",
+    "industry": "Engineering & Defense",
+    "headquarters": "Houston, TX"
+  },
+  {
+    "vendor_id": "V025",
+    "vendor_name": "Jacobs Engineering",
+    "industry": "Engineering",
+    "headquarters": "Dallas, TX"
+  },
+  {
+    "vendor_id": "V026",
+    "vendor_name": "Amentum",
+    "industry": "Engineering & Defense",
+    "headquarters": "Germantown, MD"
+  },
+  {
+    "vendor_id": "V027",
+    "vendor_name": "Maximus Inc",
+    "industry": "Government Services",
+    "headquarters": "Tysons, VA"
+  },
+  {
+    "vendor_id": "V028",
+    "vendor_name": "ICF International",
+    "industry": "Consulting",
+    "headquarters": "Fairfax, VA"
+  },
+  {
+    "vendor_id": "V029",
+    "vendor_name": "Parsons Corporation",
+    "industry": "Engineering & Defense",
+    "headquarters": "Centreville, VA"
+  },
+  {
+    "vendor_id": "V030",
+    "vendor_name": "Oracle",
+    "industry": "Technology",
+    "headquarters": "Austin, TX"
+  },
+  {
+    "vendor_id": "V031",
+    "vendor_name": "Dell Technologies",
+    "industry": "IT & Hardware",
+    "headquarters": "Round Rock, TX"
+  },
+  {
+    "vendor_id": "V032",
+    "vendor_name": "HP Inc",
+    "industry": "IT & Hardware",
+    "headquarters": "Palo Alto, CA"
+  },
+  {
+    "vendor_id": "V033",
+    "vendor_name": "Cisco Systems",
+    "industry": "IT & Networking",
+    "headquarters": "San Jose, CA"
+  },
+  {
+    "vendor_id": "V034",
+    "vendor_name": "Verizon",
+    "industry": "Telecommunications",
+    "headquarters": "New York, NY"
+  },
+  {
+    "vendor_id": "V035",
+    "vendor_name": "AT&T",
+    "industry": "Telecommunications",
+    "headquarters": "Dallas, TX"
+  },
+  {
+    "vendor_id": "V036",
+    "vendor_name": "General Electric",
+    "industry": "Energy & Industrial",
+    "headquarters": "Boston, MA"
+  },
+  {
+    "vendor_id": "V037",
+    "vendor_name": "Honeywell",
+    "industry": "Aerospace & Industrial",
+    "headquarters": "Charlotte, NC"
+  },
+  {
+    "vendor_id": "V038",
+    "vendor_name": "Textron Systems",
+    "industry": "Defense & Aerospace",
+    "headquarters": "Providence, RI"
+  },
+  {
+    "vendor_id": "V039",
+    "vendor_name": "SpaceX",
+    "industry": "Aerospace",
+    "headquarters": "Hawthorne, CA"
+  },
+  {
+    "vendor_id": "V040",
+    "vendor_name": "Blue Origin",
+    "industry": "Aerospace",
+    "headquarters": "Kent, WA"
+  },
+  {
+    "vendor_id": "V041",
+    "vendor_name": "Pfizer",
+    "industry": "Pharmaceuticals",
+    "headquarters": "New York, NY"
+  },
+  {
+    "vendor_id": "V042",
+    "vendor_name": "Moderna",
+    "industry": "Pharmaceuticals",
+    "headquarters": "Cambridge, MA"
+  },
+  {
+    "vendor_id": "V043",
+    "vendor_name": "Johnson & Johnson",
+    "industry": "Healthcare & Pharma",
+    "headquarters": "New Brunswick, NJ"
+  },
+  {
+    "vendor_id": "V044",
+    "vendor_name": "Emergent BioSolutions",
+    "industry": "Pharmaceuticals",
+    "headquarters": "Gaithersburg, MD"
+  },
+  {
+    "vendor_id": "V045",
+    "vendor_name": "Bechtel",
+    "industry": "Engineering & Construction",
+    "headquarters": "Reston, VA"
+  },
+  {
+    "vendor_id": "V046",
+    "vendor_name": "Fluor Corporation",
+    "industry": "Engineering & Construction",
+    "headquarters": "Irving, TX"
+  },
+  {
+    "vendor_id": "V047",
+    "vendor_name": "AECOM",
+    "industry": "Engineering",
+    "headquarters": "Dallas, TX"
+  },
+  {
+    "vendor_id": "V048",
+    "vendor_name": "Huntington Ingalls Industries",
+    "industry": "Shipbuilding & Defense",
+    "headquarters": "Newport News, VA"
+  },
+  {
+    "vendor_id": "V049",
+    "vendor_name": "General Atomics",
+    "industry": "Defense & Energy",
+    "headquarters": "San Diego, CA"
+  },
+  {
+    "vendor_id": "V050",
+    "vendor_name": "GDIT",
+    "industry": "IT & Defense",
+    "headquarters": "Falls Church, VA"
+  },
+  {
+    "vendor_id": "V051",
+    "vendor_name": "Palo Alto Networks",
+    "industry": "Cybersecurity",
+    "headquarters": "Santa Clara, CA"
+  },
+  {
+    "vendor_id": "V052",
+    "vendor_name": "CrowdStrike",
+    "industry": "Cybersecurity",
+    "headquarters": "Austin, TX"
+  },
+  {
+    "vendor_id": "V053",
+    "vendor_name": "Fortinet",
+    "industry": "Cybersecurity",
+    "headquarters": "Sunnyvale, CA"
+  },
+  {
+    "vendor_id": "V054",
+    "vendor_name": "ServiceNow",
+    "industry": "Technology",
+    "headquarters": "Santa Clara, CA"
+  },
+  {
+    "vendor_id": "V055",
+    "vendor_name": "Salesforce",
+    "industry": "Technology",
+    "headquarters": "San Francisco, CA"
+  },
+  {
+    "vendor_id": "V056",
+    "vendor_name": "Google Cloud",
+    "industry": "Cloud & IT",
+    "headquarters": "Mountain View, CA"
+  },
+  {
+    "vendor_id": "V057",
+    "vendor_name": "Red Hat",
+    "industry": "Technology",
+    "headquarters": "Raleigh, NC"
+  },
+  {
+    "vendor_id": "V058",
+    "vendor_name": "VMware",
+    "industry": "Technology",
+    "headquarters": "Palo Alto, CA"
+  },
+  {
+    "vendor_id": "V059",
+    "vendor_name": "Splunk",
+    "industry": "Data Analytics",
+    "headquarters": "San Francisco, CA"
+  },
+  {
+    "vendor_id": "V060",
+    "vendor_name": "Databricks",
+    "industry": "Data Analytics",
+    "headquarters": "San Francisco, CA"
+  },
+  {
+    "vendor_id": "V061",
+    "vendor_name": "CDW Government",
+    "industry": "IT Distribution",
+    "headquarters": "Vernon Hills, IL"
+  },
+  {
+    "vendor_id": "V062",
+    "vendor_name": "SHI International",
+    "industry": "IT Solutions",
+    "headquarters": "Somerset, NJ"
+  },
+  {
+    "vendor_id": "V063",
+    "vendor_name": "World Wide Technology",
+    "industry": "IT Solutions",
+    "headquarters": "St. Louis, MO"
+  },
+  {
+    "vendor_id": "V064",
+    "vendor_name": "Guidehouse",
+    "industry": "Consulting",
+    "headquarters": "McLean, VA"
+  },
+  {
+    "vendor_id": "V065",
+    "vendor_name": "Serco Group",
+    "industry": "Government Services",
+    "headquarters": "Herndon, VA"
+  },
+  {
+    "vendor_id": "V066",
+    "vendor_name": "Conduent",
+    "industry": "Government Services",
+    "headquarters": "Florham Park, NJ"
+  },
+  {
+    "vendor_id": "V067",
+    "vendor_name": "Mitre Corporation",
+    "industry": "Research & Development",
+    "headquarters": "McLean, VA"
+  },
+  {
+    "vendor_id": "V068",
+    "vendor_name": "RAND Corporation",
+    "industry": "Research",
+    "headquarters": "Santa Monica, CA"
+  },
+  {
+    "vendor_id": "V069",
+    "vendor_name": "Battelle Memorial Institute",
+    "industry": "Research & Development",
+    "headquarters": "Columbus, OH"
+  },
+  {
+    "vendor_id": "V070",
+    "vendor_name": "RTI International",
+    "industry": "Research",
+    "headquarters": "Durham, NC"
+  },
+  {
+    "vendor_id": "V071",
+    "vendor_name": "Abt Associates",
+    "industry": "Research & Consulting",
+    "headquarters": "Rockville, MD"
+  },
+  {
+    "vendor_id": "V072",
+    "vendor_name": "Noblis",
+    "industry": "Research & IT",
+    "headquarters": "Reston, VA"
+  },
+  {
+    "vendor_id": "V073",
+    "vendor_name": "Westat",
+    "industry": "Research & Statistics",
+    "headquarters": "Rockville, MD"
+  },
+  {
+    "vendor_id": "V074",
+    "vendor_name": "FedEx",
+    "industry": "Logistics",
+    "headquarters": "Memphis, TN"
+  },
+  {
+    "vendor_id": "V075",
+    "vendor_name": "UPS",
+    "industry": "Logistics",
+    "headquarters": "Atlanta, GA"
+  },
+  {
+    "vendor_id": "V076",
+    "vendor_name": "Caterpillar",
+    "industry": "Heavy Equipment",
+    "headquarters": "Irving, TX"
+  },
+  {
+    "vendor_id": "V077",
+    "vendor_name": "3M Company",
+    "industry": "Manufacturing",
+    "headquarters": "Maplewood, MN"
+  },
+  {
+    "vendor_id": "V078",
+    "vendor_name": "Motorola Solutions",
+    "industry": "Communications",
+    "headquarters": "Chicago, IL"
+  },
+  {
+    "vendor_id": "V079",
+    "vendor_name": "Tyler Technologies",
+    "industry": "Government Software",
+    "headquarters": "Plano, TX"
+  },
+  {
+    "vendor_id": "V080",
+    "vendor_name": "Telos Corporation",
+    "industry": "IT & Security",
+    "headquarters": "Ashburn, VA"
+  },
+  {
+    "vendor_id": "V081",
+    "vendor_name": "Raytheon Intelligence & Space",
+    "industry": "Defense & Intelligence",
+    "headquarters": "Arlington, VA"
+  },
+  {
+    "vendor_id": "V082",
+    "vendor_name": "Lockheed Martin Aeronautics",
+    "industry": "Defense & Aerospace",
+    "headquarters": "Fort Worth, TX"
+  },
+  {
+    "vendor_id": "V083",
+    "vendor_name": "Boeing Defense",
+    "industry": "Defense & Aerospace",
+    "headquarters": "St. Louis, MO"
+  },
+  {
+    "vendor_id": "V084",
+    "vendor_name": "Northrop Grumman Mission Systems",
+    "industry": "Defense & IT",
+    "headquarters": "Linthicum, MD"
+  },
+  {
+    "vendor_id": "V085",
+    "vendor_name": "Pratt & Whitney",
+    "industry": "Aerospace",
+    "headquarters": "East Hartford, CT"
+  },
+  {
+    "vendor_id": "V086",
+    "vendor_name": "GE Aviation",
+    "industry": "Aerospace",
+    "headquarters": "Evendale, OH"
+  },
+  {
+    "vendor_id": "V087",
+    "vendor_name": "United Launch Alliance",
+    "industry": "Space",
+    "headquarters": "Centennial, CO"
+  },
+  {
+    "vendor_id": "V088",
+    "vendor_name": "Ball Aerospace",
+    "industry": "Aerospace & Defense",
+    "headquarters": "Broomfield, CO"
+  },
+  {
+    "vendor_id": "V089",
+    "vendor_name": "Sierra Nevada Corporation",
+    "industry": "Defense & Aerospace",
+    "headquarters": "Sparks, NV"
+  },
+  {
+    "vendor_id": "V090",
+    "vendor_name": "Leonardo DRS",
+    "industry": "Defense",
+    "headquarters": "Arlington, VA"
+  },
+  {
+    "vendor_id": "V091",
+    "vendor_name": "Cubic Corporation",
+    "industry": "Defense & Transportation",
+    "headquarters": "San Diego, CA"
+  },
+  {
+    "vendor_id": "V092",
+    "vendor_name": "Kratos Defense",
+    "industry": "Defense",
+    "headquarters": "San Diego, CA"
+  },
+  {
+    "vendor_id": "V093",
+    "vendor_name": "Carahsoft Technology",
+    "industry": "IT Distribution",
+    "headquarters": "Reston, VA"
+  },
+  {
+    "vendor_id": "V094",
+    "vendor_name": "Apex Systems",
+    "industry": "IT Staffing",
+    "headquarters": "Richmond, VA"
+  },
+  {
+    "vendor_id": "V095",
+    "vendor_name": "Tenable",
+    "industry": "Cybersecurity",
+    "headquarters": "Columbia, MD"
+  },
+  {
+    "vendor_id": "V096",
+    "vendor_name": "Zscaler",
+    "industry": "Cloud Security",
+    "headquarters": "San Jose, CA"
+  },
+  {
+    "vendor_id": "V097",
+    "vendor_name": "Okta",
+    "industry": "Identity & Security",
+    "headquarters": "San Francisco, CA"
+  },
+  {
+    "vendor_id": "V098",
+    "vendor_name": "HashiCorp",
+    "industry": "Cloud Infrastructure",
+    "headquarters": "San Francisco, CA"
+  },
+  {
+    "vendor_id": "V099",
+    "vendor_name": "Elastic",
+    "industry": "Data Analytics",
+    "headquarters": "Mountain View, CA"
+  },
+  {
+    "vendor_id": "V100",
+    "vendor_name": "Nutanix",
+    "industry": "Cloud Infrastructure",
+    "headquarters": "San Jose, CA"
+  }
+]

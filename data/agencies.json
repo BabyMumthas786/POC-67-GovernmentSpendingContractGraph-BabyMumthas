@@ -1,0 +1,182 @@
+[
+  {
+    "agency_id": "A001",
+    "agency_name": "Department of Defense",
+    "agency_type": "Federal",
+    "annual_budget": 715000000000
+  },
+  {
+    "agency_id": "A002",
+    "agency_name": "Department of Health and Human Services",
+    "agency_type": "Federal",
+    "annual_budget": 1700000000000
+  },
+  {
+    "agency_id": "A003",
+    "agency_name": "National Aeronautics and Space Administration",
+    "agency_type": "Federal",
+    "annual_budget": 25000000000
+  },
+  {
+    "agency_id": "A004",
+    "agency_name": "Department of Homeland Security",
+    "agency_type": "Federal",
+    "annual_budget": 55000000000
+  },
+  {
+    "agency_id": "A005",
+    "agency_name": "Department of Veterans Affairs",
+    "agency_type": "Federal",
+    "annual_budget": 300000000000
+  },
+  {
+    "agency_id": "A006",
+    "agency_name": "Department of Energy",
+    "agency_type": "Federal",
+    "annual_budget": 48000000000
+  },
+  {
+    "agency_id": "A007",
+    "agency_name": "Department of Education",
+    "agency_type": "Federal",
+    "annual_budget": 68000000000
+  },
+  {
+    "agency_id": "A008",
+    "agency_name": "Department of Transportation",
+    "agency_type": "Federal",
+    "annual_budget": 87000000000
+  },
+  {
+    "agency_id": "A009",
+    "agency_name": "Department of Justice",
+    "agency_type": "Federal",
+    "annual_budget": 38000000000
+  },
+  {
+    "agency_id": "A010",
+    "agency_name": "Department of Commerce",
+    "agency_type": "Federal",
+    "annual_budget": 12000000000
+  },
+  {
+    "agency_id": "A011",
+    "agency_name": "Department of the Treasury",
+    "agency_type": "Federal",
+    "annual_budget": 16000000000
+  },
+  {
+    "agency_id": "A012",
+    "agency_name": "Department of Agriculture",
+    "agency_type": "Federal",
+    "annual_budget": 28000000000
+  },
+  {
+    "agency_id": "A013",
+    "agency_name": "Department of the Interior",
+    "agency_type": "Federal",
+    "annual_budget": 15000000000
+  },
+  {
+    "agency_id": "A014",
+    "agency_name": "Department of Labor",
+    "agency_type": "Federal",
+    "annual_budget": 14000000000
+  },
+  {
+    "agency_id": "A015",
+    "agency_name": "Department of State",
+    "agency_type": "Federal",
+    "annual_budget": 52000000000
+  },
+  {
+    "agency_id": "A016",
+    "agency_name": "Environmental Protection Agency",
+    "agency_type": "Federal",
+    "annual_budget": 12000000000
+  },
+  {
+    "agency_id": "A017",
+    "agency_name": "General Services Administration",
+    "agency_type": "Federal",
+    "annual_budget": 26000000000
+  },
+  {
+    "agency_id": "A018",
+    "agency_name": "Social Security Administration",
+    "agency_type": "Federal",
+    "annual_budget": 13000000000
+  },
+  {
+    "agency_id": "A019",
+    "agency_name": "National Science Foundation",
+    "agency_type": "Federal",
+    "annual_budget": 9000000000
+  },
+  {
+    "agency_id": "A020",
+    "agency_name": "Small Business Administration",
+    "agency_type": "Federal",
+    "annual_budget": 1200000000
+  },
+  {
+    "agency_id": "A021",
+    "agency_name": "Nuclear Regulatory Commission",
+    "agency_type": "Federal",
+    "annual_budget": 900000000
+  },
+  {
+    "agency_id": "A022",
+    "agency_name": "Federal Communications Commission",
+    "agency_type": "Independent",
+    "annual_budget": 590000000
+  },
+  {
+    "agency_id": "A023",
+    "agency_name": "Securities and Exchange Commission",
+    "agency_type": "Independent",
+    "annual_budget": 2100000000
+  },
+  {
+    "agency_id": "A024",
+    "agency_name": "National Institutes of Health",
+    "agency_type": "Federal",
+    "annual_budget": 47000000000
+  },
+  {
+    "agency_id": "A025",
+    "agency_name": "Centers for Disease Control",
+    "agency_type": "Federal",
+    "annual_budget": 12000000000
+  },
+  {
+    "agency_id": "A026",
+    "agency_name": "Federal Emergency Management Agency",
+    "agency_type": "Federal",
+    "annual_budget": 30000000000
+  },
+  {
+    "agency_id": "A027",
+    "agency_name": "U.S. Agency for International Development",
+    "agency_type": "Federal",
+    "annual_budget": 22000000000
+  },
+  {
+    "agency_id": "A028",
+    "agency_name": "Office of Personnel Management",
+    "agency_type": "Independent",
+    "annual_budget": 2000000000
+  },
+  {
+    "agency_id": "A029",
+    "agency_name": "Corps of Engineers",
+    "agency_type": "Federal",
+    "annual_budget": 8000000000
+  },
+  {
+    "agency_id": "A030",
+    "agency_name": "Consumer Financial Protection Bureau",
+    "agency_type": "Independent",
+    "annual_budget": 600000000
+  }
+]
