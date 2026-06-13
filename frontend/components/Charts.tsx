@@ -74,10 +74,10 @@ export default function Charts({ analytics, loading }: ChartsProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4" id="charts-section">
       {/* Spending by Agency — Bar Chart */}
-      <div className="card p-4">
-        <h3 className="section-title mb-4">Spending by Agency</h3>
+      <div className="card p-5">
+        <h3 className="section-title mb-3">Spending by Agency</h3>
         <ResponsiveContainer width="100%" height={250}>
-          <BarChart data={agencyData} layout="vertical" margin={{ left: 10 }}>
+          <BarChart data={agencyData} layout="vertical" margin={{ left: 8, right: 8, top: 4, bottom: 4 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
             <XAxis type="number" tickFormatter={(v) => formatCurrency(v)}
                    tick={{ fill: "#64748b", fontSize: 10 }} />
@@ -94,8 +94,8 @@ export default function Charts({ analytics, loading }: ChartsProps) {
       </div>
 
       {/* Spending by Year — Line Chart */}
-      <div className="card p-4">
-        <h3 className="section-title mb-4">Spending by Year</h3>
+      <div className="card p-5">
+        <h3 className="section-title mb-3">Spending by Year</h3>
         <ResponsiveContainer width="100%" height={250}>
           <LineChart data={yearData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
@@ -111,10 +111,10 @@ export default function Charts({ analytics, loading }: ChartsProps) {
       </div>
 
       {/* Top Vendors — Horizontal Bar */}
-      <div className="card p-4">
-        <h3 className="section-title mb-4">Top Vendors</h3>
+      <div className="card p-5">
+        <h3 className="section-title mb-3">Top Vendors</h3>
         <ResponsiveContainer width="100%" height={250}>
-          <BarChart data={vendorData} layout="vertical" margin={{ left: 10 }}>
+          <BarChart data={vendorData} layout="vertical" margin={{ left: 8, right: 8, top: 4, bottom: 4 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
             <XAxis type="number" tickFormatter={(v) => formatCurrency(v)}
                    tick={{ fill: "#64748b", fontSize: 10 }} />
@@ -131,8 +131,8 @@ export default function Charts({ analytics, loading }: ChartsProps) {
       </div>
 
       {/* Category Distribution — Pie */}
-      <div className="card p-4">
-        <h3 className="section-title mb-4">Category Distribution</h3>
+      <div className="card p-5">
+        <h3 className="section-title mb-3">Category Distribution</h3>
         <ResponsiveContainer width="100%" height={250}>
           <PieChart>
             <Pie data={categoryData} cx="50%" cy="50%"

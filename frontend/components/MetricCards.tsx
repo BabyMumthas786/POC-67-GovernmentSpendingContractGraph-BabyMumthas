@@ -20,7 +20,7 @@ const METRICS = [
 export default function MetricCards({ analytics, loading }: MetricCardsProps) {
   if (loading) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3" id="metric-cards">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4" id="metric-cards">
         {METRICS.map((m) => (
           <div key={m.key} className="metric-card">
             <div className="skeleton h-8 w-24 mb-2" />
@@ -54,7 +54,7 @@ export default function MetricCards({ analytics, loading }: MetricCardsProps) {
 
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3" id="metric-cards">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4" id="metric-cards">
       {METRICS.map((m) => {
         const value = getValue(m.key);
         const formatted = m.format === "currency"

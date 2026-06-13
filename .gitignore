@@ -1,0 +1,15 @@
+# Theory / planning docs
+docs/
+
+# Screenshots and demo (empty)
+screenshots/
+demo/
+
+# Node
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.env

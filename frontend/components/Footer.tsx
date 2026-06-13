@@ -3,7 +3,7 @@
 export default function Footer() {
   return (
     <footer
-      className="px-6 py-6 mt-auto"
+      className="px-4 lg:px-6 py-5 mt-auto"
       style={{
         background: "var(--bg-secondary)",
         borderTop: "1px solid var(--border-primary)",

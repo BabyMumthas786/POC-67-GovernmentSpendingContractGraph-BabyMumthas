@@ -139,13 +139,15 @@ export default function Dashboard() {
           onFilterChange={handleFilterChange}
           isOpen={sidebarOpen}
           onToggle={() => setSidebarOpen(!sidebarOpen)}
+          searchQuery={searchQuery}
+          onSearchChange={handleSearch}
         />
 
         {/* Main content */}
-        <main className="flex-1 p-4 lg:p-6 overflow-x-hidden">
+        <main className="flex-1 px-4 py-5 lg:px-6 lg:py-6 overflow-x-hidden">
           {/* Mobile filter toggle */}
           <button
-            className="btn btn-secondary mb-4 lg:hidden"
+            className="btn btn-secondary mb-5 lg:hidden"
             onClick={() => setSidebarOpen(!sidebarOpen)}
             id="mobile-filter-toggle"
           >
@@ -157,7 +159,7 @@ export default function Dashboard() {
 
           {/* Error state */}
           {error && (
-            <div className="mb-4 p-4 rounded-lg" style={{
+            <div className="mb-5 p-4 rounded-lg" style={{
               background: "rgba(239, 68, 68, 0.1)",
               border: "1px solid rgba(239, 68, 68, 0.3)",
             }}>
@@ -175,17 +177,17 @@ export default function Dashboard() {
           )}
 
           {/* Metric Cards */}
-          <section className="mb-6" id="analytics-section">
+          <section className="mb-5" id="analytics-section">
             <MetricCards analytics={analytics} loading={loading} />
           </section>
 
           {/* Timeline Control */}
-          <section className="mb-6">
+          <section className="mb-5">
             <Timeline year={filters.year} onChange={handleTimelineChange} />
           </section>
 
           {/* Graph */}
-          <section className="mb-6" id="graph-section">
+          <section className="mb-5" id="graph-section">
             <div className="flex items-center justify-between mb-3">
               <div>
                 <h2 className="section-title">Contract Relationship Graph</h2>
@@ -203,8 +205,8 @@ export default function Dashboard() {
           </section>
 
           {/* Charts */}
-          <section className="mb-6">
-            <div className="mb-4">
+          <section className="mb-5">
+            <div className="mb-3">
               <h2 className="section-title">Spending Analytics</h2>
               <p className="section-subtitle">
                 Breakdown of government contract spending across agencies, vendors, and categories
@@ -214,7 +216,7 @@ export default function Dashboard() {
           </section>
 
           {/* Insights + Control + Downloads */}
-          <section className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+          <section className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-5">
             <InsightsPanel />
             <ControlPanel />
             <DownloadPanel

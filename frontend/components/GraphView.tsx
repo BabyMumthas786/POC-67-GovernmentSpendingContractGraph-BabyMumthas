@@ -16,10 +16,19 @@ export default function GraphView({ data, loading, searchQuery, onEdgeClick }: G
   const containerRef = useRef<HTMLDivElement>(null);
   const cyRef = useRef<cytoscape.Core | null>(null);
   const layoutRef = useRef<cytoscape.Layouts | null>(null);
+  const destroyedRef = useRef(false);
+  const onEdgeClickRef = useRef(onEdgeClick);
   const [graphReady, setGraphReady] = useState(false);
+
+  // Keep the callback ref up to date without triggering rebuilds
+  useEffect(() => {
+    onEdgeClickRef.current = onEdgeClick;
+  }, [onEdgeClick]);
 
   // Safely destroy the current Cytoscape instance
   const destroyCy = useCallback(() => {
+    destroyedRef.current = true;
+
     if (layoutRef.current) {
       try {
         layoutRef.current.stop();
@@ -30,6 +39,7 @@ export default function GraphView({ data, loading, searchQuery, onEdgeClick }: G
     }
     if (cyRef.current) {
       try {
+        cyRef.current.removeAllListeners();
         cyRef.current.destroy();
       } catch {
         // instance may already be destroyed
@@ -47,6 +57,7 @@ export default function GraphView({ data, loading, searchQuery, onEdgeClick }: G
 
     // Destroy previous instance before building a new one
     destroyCy();
+    destroyedRef.current = false;
 
     const maxNodeSpending = Math.max(
       ...data.nodes.map((n) => n.total_spending || n.total_received || 1)
@@ -228,7 +239,7 @@ export default function GraphView({ data, loading, searchQuery, onEdgeClick }: G
       const edgeDataStr = evt.target.data("edgeData");
       if (edgeDataStr) {
         const edgeData = JSON.parse(edgeDataStr) as GraphEdge;
-        onEdgeClick(edgeData);
+        onEdgeClickRef.current(edgeData);
       }
     });
 
@@ -237,8 +248,8 @@ export default function GraphView({ data, loading, searchQuery, onEdgeClick }: G
     // Run the layout manually so we can track and stop it on cleanup
     const layout = cy.layout({
       name: "cose",
-      animate: true,
-      animationDuration: 1000,
+      animate: "end",
+      animationDuration: 800,
       nodeRepulsion: () => 10000,
       idealEdgeLength: () => 140,
       gravity: 0.25,
@@ -251,10 +262,12 @@ export default function GraphView({ data, loading, searchQuery, onEdgeClick }: G
 
     // Mark graph as ready once layout completes
     layout.on("layoutstop", () => {
-      setGraphReady(true);
+      if (!destroyedRef.current) {
+        setGraphReady(true);
+      }
       layoutRef.current = null;
     });
-  }, [data, onEdgeClick, destroyCy]);
+  }, [data, destroyCy]);
 
   useEffect(() => {
     if (!loading) {

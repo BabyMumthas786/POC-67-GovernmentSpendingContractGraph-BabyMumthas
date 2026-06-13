@@ -41,7 +41,7 @@ export default function ControlPanel() {
         {controllers.map((item) => (
           <div
             key={item.title}
-            className="flex gap-3 p-2.5 rounded-lg transition-colors"
+            className="flex gap-3 p-3 rounded-lg transition-colors"
             style={{ background: "var(--bg-tertiary)" }}
           >
             <span className="text-xl flex-shrink-0 mt-0.5">{item.icon}</span>
