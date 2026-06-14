@@ -3,7 +3,7 @@
 > **POC-67** · Governance & Trust Rail  
 > Interactive intelligence platform visualizing government spending relationships between agencies and vendors.
 
-![Dashboard](screenshots/dashboard-overview.png)
+![Dashboard](dashboard.png)
 
 ---
 
