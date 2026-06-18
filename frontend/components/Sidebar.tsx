@@ -124,6 +124,20 @@ export default function Sidebar({
           </div>
         </div>
 
+        {/* Data Source */}
+        <div className="filter-group">
+          <label className="filter-label">Data Source</label>
+          <select
+            id="filter-source"
+            className="filter-select"
+            value={filters.source || ""}
+            onChange={(e) => update("source", e.target.value)}
+          >
+            <option value="">Synthetic (Local)</option>
+            <option value="live">Live (USAspending.gov + SAM.gov)</option>
+          </select>
+        </div>
+
         {/* Agency Filter */}
         <div className="filter-group">
           <label className="filter-label">Agency</label>

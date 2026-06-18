@@ -113,7 +113,7 @@ export default function GraphView({ data, loading, searchQuery, onEdgeClick }: G
             "font-size": "9px",
             "font-weight": "bold" as unknown as number,
             color: "#e2e8f0",
-            "text-outline-color": "#0a0e17",
+            "text-outline-color": "#030712",
             "text-outline-width": 2,
             "text-valign": "bottom",
             "text-margin-y": 6,
@@ -132,7 +132,7 @@ export default function GraphView({ data, loading, searchQuery, onEdgeClick }: G
             label: "data(label)",
             "font-size": "8px",
             color: "#e2e8f0",
-            "text-outline-color": "#0a0e17",
+            "text-outline-color": "#030712",
             "text-outline-width": 2,
             "text-valign": "bottom",
             "text-margin-y": 6,
@@ -389,7 +389,7 @@ export default function GraphView({ data, loading, searchQuery, onEdgeClick }: G
         <div
           className="absolute top-3 right-3 px-3 py-1.5 rounded-lg"
           style={{
-            background: "rgba(10, 14, 23, 0.8)",
+            background: "rgba(3, 7, 18, 0.8)",
             backdropFilter: "blur(8px)",
             border: "1px solid var(--border-primary)",
           }}

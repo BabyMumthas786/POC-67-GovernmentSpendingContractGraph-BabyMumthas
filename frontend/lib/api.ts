@@ -24,16 +24,21 @@ function buildParams(filters: Filters): Record<string, string | number> {
   if (filters.status) params.status = filters.status;
   if (filters.min_amount !== undefined) params.min_amount = filters.min_amount;
   if (filters.max_amount !== undefined) params.max_amount = filters.max_amount;
+  if (filters.source) params.source = filters.source;
   return params;
 }
 
-export async function fetchAgencies(): Promise<Agency[]> {
-  const { data } = await api.get<Agency[]>("/agencies");
+export async function fetchAgencies(source?: string): Promise<Agency[]> {
+  const params: Record<string, string> = {};
+  if (source) params.source = source;
+  const { data } = await api.get<Agency[]>("/agencies", { params });
   return data;
 }
 
-export async function fetchVendors(): Promise<Vendor[]> {
-  const { data } = await api.get<Vendor[]>("/vendors");
+export async function fetchVendors(source?: string): Promise<Vendor[]> {
+  const params: Record<string, string> = {};
+  if (source) params.source = source;
+  const { data } = await api.get<Vendor[]>("/vendors", { params });
   return data;
 }
 

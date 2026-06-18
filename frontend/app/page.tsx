@@ -37,13 +37,13 @@ export default function Dashboard() {
   const [drawerTarget, setDrawerTarget] = useState("");
   const [drawerAmount, setDrawerAmount] = useState(0);
 
-  // Load reference data on mount
+  // Load reference data on mount and when source changes
   useEffect(() => {
     const loadReferenceData = async () => {
       try {
         const [agencyData, vendorData] = await Promise.all([
-          fetchAgencies(),
-          fetchVendors(),
+          fetchAgencies(filters.source),
+          fetchVendors(filters.source),
         ]);
         setAgencies(agencyData);
         setVendors(vendorData);
@@ -53,7 +53,7 @@ export default function Dashboard() {
       }
     };
     loadReferenceData();
-  }, []);
+  }, [filters.source]);
 
   // Load filtered data
   const loadData = useCallback(async () => {

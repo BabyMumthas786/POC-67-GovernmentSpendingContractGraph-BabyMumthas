@@ -4,9 +4,16 @@ Endpoints: /, /contracts, /agencies, /vendors, /graph, /analytics
 """
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 import json
 import os
+import urllib.request
+import urllib.parse
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Government Spending Contract Graph API",
@@ -36,10 +43,185 @@ AGENCIES = _load("agencies.json")
 VENDORS = _load("vendors.json")
 CONTRACTS = _load("contracts.json")
 
-# Build lookup dicts
+# Build lookup dicts for synthetic fallback
 AGENCY_MAP = {a["agency_id"]: a for a in AGENCIES}
 VENDOR_MAP = {v["vendor_id"]: v for v in VENDORS}
 
+# ─── USAspending.gov & SAM.gov API Integration ───
+LIVE_DATA_CACHE = {
+    "contracts": [],
+    "vendors": [],
+    "agencies": [],
+    "last_fetched": None
+}
+
+def fetch_from_usaspending() -> Dict[str, Any]:
+    url = "https://api.usaspending.gov/api/v2/search/spending_by_award/"
+    payload = {
+        "filters": {
+            "fiscal_years": [2024, 2025],
+            "award_type_codes": ["A", "B", "C", "D"] # Contracts
+        },
+        "fields": [
+            "Award ID",
+            "Recipient Name",
+            "Award Amount",
+            "Start Date",
+            "Description",
+            "Awarding Agency",
+            "Awarding Sub Agency",
+            "Award Type"
+        ],
+        "limit": 200,
+        "sort": "Award Amount",
+        "order": "desc"
+    }
+    
+    data = json.dumps(payload).encode("utf-8")
+    req = urllib.request.Request(
+        url, 
+        data=data, 
+        headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"}
+    )
+    
+    with urllib.request.urlopen(req, timeout=8) as response:
+        res_data = response.read().decode("utf-8")
+        return json.loads(res_data)
+
+def fetch_from_sam_gov(vendor_name: str) -> Dict[str, Any]:
+    sam_key = os.environ.get("SAM_API_KEY")
+    if not sam_key:
+        return {}
+    
+    url = f"https://api.sam.gov/entity-information/v3/entities?api_key={sam_key}&name={urllib.parse.quote(vendor_name)}"
+    req = urllib.request.Request(
+        url,
+        headers={"User-Agent": "Mozilla/5.0"}
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=5) as response:
+            res_data = response.read().decode("utf-8")
+            return json.loads(res_data)
+    except Exception as e:
+        logger.warning(f"Failed to fetch from SAM.gov: {e}")
+        return {}
+
+def get_live_data(force_refresh: bool = False) -> Dict[str, Any]:
+    global LIVE_DATA_CACHE
+    
+    if LIVE_DATA_CACHE["contracts"] and not force_refresh:
+        return LIVE_DATA_CACHE
+    
+    try:
+        logger.info("Fetching live spending data from USAspending.gov...")
+        raw_data = fetch_from_usaspending()
+        results = raw_data.get("results", [])
+        
+        if not results:
+            logger.warning("USAspending.gov returned empty results. Falling back to synthetic data.")
+            return {
+                "contracts": CONTRACTS,
+                "vendors": VENDORS,
+                "agencies": AGENCIES
+            }
+        
+        agencies_map = {}
+        vendors_map = {}
+        contracts = []
+        
+        for idx, item in enumerate(results):
+            award_id = item.get("Award ID") or f"L-C{idx+1:03d}"
+            recipient_name = item.get("Recipient Name") or "UNKNOWN VENDOR"
+            amount = item.get("Award Amount") or 0.0
+            start_date = item.get("Start Date") or "2024-01-01"
+            description = item.get("Description") or ""
+            awarding_agency = item.get("Awarding Agency") or "Department of Government"
+            
+            try:
+                year = int(start_date.split("-")[0])
+            except Exception:
+                year = 2024
+                
+            agency_slug = awarding_agency.lower().replace(" ", "-").replace(",", "")
+            agency_id = f"A_{agency_slug}"
+            
+            vendor_slug = recipient_name.lower().replace(" ", "-").replace(",", "").replace(".", "").replace("'", "")
+            vendor_id = f"V_{vendor_slug}"
+            
+            desc_upper = description.upper()
+            agency_upper = awarding_agency.upper()
+            
+            category = "Infrastructure"
+            if "DEFENSE" in agency_upper or "NAVY" in agency_upper or "ARMY" in agency_upper or "AIR FORCE" in agency_upper:
+                category = "Defense"
+            elif "HEALTH" in agency_upper or "MEDIC" in agency_upper or "HUMAN SERVICES" in agency_upper:
+                category = "Healthcare"
+            elif "IT" in desc_upper or "SOFTWARE" in desc_upper or "COMPUTER" in desc_upper or "CLOUD" in desc_upper or "TECHNOLOGY" in desc_upper:
+                category = "IT Services"
+            elif "ENERGY" in agency_upper or "POWER" in agency_upper or "NUCLEAR" in agency_upper:
+                category = "Energy"
+            elif "SCIENCE" in agency_upper or "RESEARCH" in agency_upper or "NASA" in agency_upper or "STUDY" in desc_upper or "R&D" in desc_upper:
+                category = "Research"
+            elif "EDUCATION" in agency_upper or "SCHOOL" in agency_upper or "TRAINING" in desc_upper:
+                category = "Education"
+                
+            title = description.strip()
+            if not title or len(title) < 5 or title.startswith("IGF::") or "::" in title:
+                title = f"{category} Support - {awarding_agency}"
+            
+            if agency_id not in agencies_map:
+                agencies_map[agency_id] = {
+                    "agency_id": agency_id,
+                    "agency_name": awarding_agency,
+                    "agency_type": "Federal" if "DEPARTMENT" in agency_upper else "Independent",
+                    "annual_budget": amount * 5.0
+                }
+            else:
+                agencies_map[agency_id]["annual_budget"] += amount * 1.5
+                
+            if vendor_id not in vendors_map:
+                sam_data = fetch_from_sam_gov(recipient_name)
+                hq = "Washington, DC"
+                if sam_data and "entity" in sam_data:
+                    entity = sam_data["entity"]
+                    city = entity.get("physicalAddress", {}).get("city", "")
+                    state = entity.get("physicalAddress", {}).get("stateOrProvinceCode", "")
+                    if city and state:
+                        hq = f"{city}, {state}"
+                        
+                vendors_map[vendor_id] = {
+                    "vendor_id": vendor_id,
+                    "vendor_name": recipient_name,
+                    "industry": "Government Contracting" if category == "Defense" else category,
+                    "headquarters": hq
+                }
+                
+            contracts.append({
+                "contract_id": award_id,
+                "agency_id": agency_id,
+                "vendor_id": vendor_id,
+                "contract_title": title,
+                "amount": int(amount),
+                "year": year,
+                "category": category,
+                "status": "Active" if year >= 2024 else "Completed"
+            })
+            
+        LIVE_DATA_CACHE["agencies"] = list(agencies_map.values())
+        LIVE_DATA_CACHE["vendors"] = list(vendors_map.values())
+        LIVE_DATA_CACHE["contracts"] = contracts
+        LIVE_DATA_CACHE["last_fetched"] = "now"
+        
+        logger.info(f"Successfully loaded live data from USAspending.gov: {len(contracts)} contracts")
+        return LIVE_DATA_CACHE
+        
+    except Exception as e:
+        logger.error(f"Error fetching live data from USAspending.gov: {e}. Falling back to synthetic dataset.")
+        return {
+            "contracts": CONTRACTS,
+            "vendors": VENDORS,
+            "agencies": AGENCIES
+        }
 
 # ─── Helpers ───
 def _filter_contracts(
@@ -79,12 +261,16 @@ def home():
 
 
 @app.get("/agencies")
-def get_agencies():
+def get_agencies(source: Optional[str] = Query(None)):
+    if source == "live":
+        return get_live_data()["agencies"]
     return AGENCIES
 
 
 @app.get("/vendors")
-def get_vendors():
+def get_vendors(source: Optional[str] = Query(None)):
+    if source == "live":
+        return get_live_data()["vendors"]
     return VENDORS
 
 
@@ -97,9 +283,13 @@ def get_contracts(
     status: Optional[str] = Query(None),
     min_amount: Optional[int] = Query(None),
     max_amount: Optional[int] = Query(None),
+    source: Optional[str] = Query(None),
 ):
+    contracts = CONTRACTS
+    if source == "live":
+        contracts = get_live_data()["contracts"]
     return _filter_contracts(
-        CONTRACTS, agency_id, vendor_id, year, category, status,
+        contracts, agency_id, vendor_id, year, category, status,
         min_amount, max_amount
     )
 
@@ -113,13 +303,24 @@ def get_graph(
     status: Optional[str] = Query(None),
     min_amount: Optional[int] = Query(None),
     max_amount: Optional[int] = Query(None),
+    source: Optional[str] = Query(None),
 ):
     """
     Transform contract relationships into graph format.
     Nodes = agencies + vendors, Edges = contracts.
     """
+    contracts = CONTRACTS
+    agency_map = AGENCY_MAP
+    vendor_map = VENDOR_MAP
+    
+    if source == "live":
+        data = get_live_data()
+        contracts = data["contracts"]
+        agency_map = {a["agency_id"]: a for a in data["agencies"]}
+        vendor_map = {v["vendor_id"]: v for v in data["vendors"]}
+
     filtered = _filter_contracts(
-        CONTRACTS, agency_id, vendor_id, year, category, status,
+        contracts, agency_id, vendor_id, year, category, status,
         min_amount, max_amount
     )
 
@@ -133,7 +334,7 @@ def get_graph(
     # Build nodes
     nodes = []
     for aid in agency_ids_in_use:
-        a = AGENCY_MAP.get(aid, {})
+        a = agency_map.get(aid, {})
         total = sum(c["amount"] for c in filtered if c["agency_id"] == aid)
         nodes.append({
             "id": a.get("agency_name", aid),
@@ -143,7 +344,7 @@ def get_graph(
             "total_spending": total,
         })
     for vid in vendor_ids_in_use:
-        v = VENDOR_MAP.get(vid, {})
+        v = vendor_map.get(vid, {})
         total = sum(c["amount"] for c in filtered if c["vendor_id"] == vid)
         nodes.append({
             "id": v.get("vendor_name", vid),
@@ -158,8 +359,8 @@ def get_graph(
     for c in filtered:
         key = (c["agency_id"], c["vendor_id"])
         if key not in edge_map:
-            a = AGENCY_MAP.get(c["agency_id"], {})
-            v = VENDOR_MAP.get(c["vendor_id"], {})
+            a = agency_map.get(c["agency_id"], {})
+            v = vendor_map.get(c["vendor_id"], {})
             edge_map[key] = {
                 "source": a.get("agency_name", c["agency_id"]),
                 "target": v.get("vendor_name", c["vendor_id"]),
@@ -185,10 +386,21 @@ def get_analytics(
     status: Optional[str] = Query(None),
     min_amount: Optional[int] = Query(None),
     max_amount: Optional[int] = Query(None),
+    source: Optional[str] = Query(None),
 ):
     """Aggregated analytics from contract data."""
+    contracts = CONTRACTS
+    agency_map = AGENCY_MAP
+    vendor_map = VENDOR_MAP
+    
+    if source == "live":
+        data = get_live_data()
+        contracts = data["contracts"]
+        agency_map = {a["agency_id"]: a for a in data["agencies"]}
+        vendor_map = {v["vendor_id"]: v for v in data["vendors"]}
+
     filtered = _filter_contracts(
-        CONTRACTS, agency_id, vendor_id, year, category, status,
+        contracts, agency_id, vendor_id, year, category, status,
         min_amount, max_amount
     )
 
@@ -222,7 +434,7 @@ def get_analytics(
     top_vendors = [
         {
             "vendor_id": vid,
-            "vendor_name": VENDOR_MAP.get(vid, {}).get("vendor_name", vid),
+            "vendor_name": vendor_map.get(vid, {}).get("vendor_name", vid),
             "total": total,
         }
         for vid, total in top_vendors
@@ -237,7 +449,7 @@ def get_analytics(
     top_agencies = [
         {
             "agency_id": aid,
-            "agency_name": AGENCY_MAP.get(aid, {}).get("agency_name", aid),
+            "agency_name": agency_map.get(aid, {}).get("agency_name", aid),
             "total": total,
         }
         for aid, total in top_agencies

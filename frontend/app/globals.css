@@ -2,10 +2,19 @@
 
 @import "tailwindcss";
 
+@theme {
+  --color-black: #000000;
+  --color-white: #ffffff;
+  --color-slate-500: #64748b;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+  --color-slate-950: #020617;
+  --color-blue-500: #3b82f6;
+}
 
 :root {
   /* Bloomberg-inspired dark palette */
-  --bg-primary: #0a0e17;
+  --bg-primary: #030712;
   --bg-secondary: #111827;
   --bg-tertiary: #1a2332;
   --bg-card: #141c2b;
@@ -151,7 +160,7 @@ body {
 
 /* ─── Navbar ─── */
 .navbar {
-  background: rgba(10, 14, 23, 0.95);
+  background: rgba(3, 7, 18, 0.95);
   backdrop-filter: blur(24px) saturate(1.5);
   border-bottom: 1px solid var(--border-primary);
   box-shadow: 0 1px 12px rgba(0, 0, 0, 0.4);
@@ -274,7 +283,7 @@ body {
   position: absolute;
   bottom: 1rem;
   left: 1rem;
-  background: rgba(10, 14, 23, 0.92);
+  background: rgba(3, 7, 18, 0.92);
   backdrop-filter: blur(12px);
   border: 1px solid var(--border-primary);
   border-radius: var(--radius);
@@ -343,7 +352,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(10, 14, 23, 0.5);
+  background: rgba(3, 7, 18, 0.5);
   backdrop-filter: blur(8px);
   position: sticky;
   top: 0;

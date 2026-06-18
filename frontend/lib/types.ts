@@ -94,4 +94,5 @@ export interface Filters {
   status?: string;
   min_amount?: number;
   max_amount?: number;
+  source?: string;
 }
