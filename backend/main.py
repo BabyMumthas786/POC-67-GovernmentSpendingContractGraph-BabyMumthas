@@ -10,6 +10,7 @@ import os
 import urllib.request
 import urllib.parse
 import logging
+import threading
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -54,6 +55,7 @@ LIVE_DATA_CACHE = {
     "agencies": [],
     "last_fetched": None
 }
+LIVE_DATA_LOCK = threading.Lock()
 
 def fetch_from_usaspending() -> Dict[str, Any]:
     url = "https://api.usaspending.gov/api/v2/search/spending_by_award/"
@@ -72,7 +74,7 @@ def fetch_from_usaspending() -> Dict[str, Any]:
             "Awarding Sub Agency",
             "Award Type"
         ],
-        "limit": 200,
+        "limit": 100,
         "sort": "Award Amount",
         "order": "desc"
     }
@@ -109,119 +111,125 @@ def fetch_from_sam_gov(vendor_name: str) -> Dict[str, Any]:
 def get_live_data(force_refresh: bool = False) -> Dict[str, Any]:
     global LIVE_DATA_CACHE
     
+    # Fast path: cache exists and no force refresh
     if LIVE_DATA_CACHE["contracts"] and not force_refresh:
         return LIVE_DATA_CACHE
     
-    try:
-        logger.info("Fetching live spending data from USAspending.gov...")
-        raw_data = fetch_from_usaspending()
-        results = raw_data.get("results", [])
+    with LIVE_DATA_LOCK:
+        # Double-checked locking
+        if LIVE_DATA_CACHE["contracts"] and not force_refresh:
+            return LIVE_DATA_CACHE
         
-        if not results:
-            logger.warning("USAspending.gov returned empty results. Falling back to synthetic data.")
-            return {
-                "contracts": CONTRACTS,
-                "vendors": VENDORS,
-                "agencies": AGENCIES
-            }
-        
-        agencies_map = {}
-        vendors_map = {}
-        contracts = []
-        
-        for idx, item in enumerate(results):
-            award_id = item.get("Award ID") or f"L-C{idx+1:03d}"
-            recipient_name = item.get("Recipient Name") or "UNKNOWN VENDOR"
-            amount = item.get("Award Amount") or 0.0
-            start_date = item.get("Start Date") or "2024-01-01"
-            description = item.get("Description") or ""
-            awarding_agency = item.get("Awarding Agency") or "Department of Government"
+        try:
+            logger.info("Fetching live spending data from USAspending.gov...")
+            raw_data = fetch_from_usaspending()
+            results = raw_data.get("results", [])
             
-            try:
-                year = int(start_date.split("-")[0])
-            except Exception:
-                year = 2024
+            if not results:
+                logger.warning("USAspending.gov returned empty results. Falling back to synthetic data.")
+                LIVE_DATA_CACHE["contracts"] = CONTRACTS
+                LIVE_DATA_CACHE["vendors"] = VENDORS
+                LIVE_DATA_CACHE["agencies"] = AGENCIES
+                LIVE_DATA_CACHE["last_fetched"] = "fallback"
+                return LIVE_DATA_CACHE
+            
+            agencies_map = {}
+            vendors_map = {}
+            contracts = []
+            
+            for idx, item in enumerate(results):
+                award_id = item.get("Award ID") or f"L-C{idx+1:03d}"
+                recipient_name = item.get("Recipient Name") or "UNKNOWN VENDOR"
+                amount = item.get("Award Amount") or 0.0
+                start_date = item.get("Start Date") or "2024-01-01"
+                description = item.get("Description") or ""
+                awarding_agency = item.get("Awarding Agency") or "Department of Government"
                 
-            agency_slug = awarding_agency.lower().replace(" ", "-").replace(",", "")
-            agency_id = f"A_{agency_slug}"
-            
-            vendor_slug = recipient_name.lower().replace(" ", "-").replace(",", "").replace(".", "").replace("'", "")
-            vendor_id = f"V_{vendor_slug}"
-            
-            desc_upper = description.upper()
-            agency_upper = awarding_agency.upper()
-            
-            category = "Infrastructure"
-            if "DEFENSE" in agency_upper or "NAVY" in agency_upper or "ARMY" in agency_upper or "AIR FORCE" in agency_upper:
-                category = "Defense"
-            elif "HEALTH" in agency_upper or "MEDIC" in agency_upper or "HUMAN SERVICES" in agency_upper:
-                category = "Healthcare"
-            elif "IT" in desc_upper or "SOFTWARE" in desc_upper or "COMPUTER" in desc_upper or "CLOUD" in desc_upper or "TECHNOLOGY" in desc_upper:
-                category = "IT Services"
-            elif "ENERGY" in agency_upper or "POWER" in agency_upper or "NUCLEAR" in agency_upper:
-                category = "Energy"
-            elif "SCIENCE" in agency_upper or "RESEARCH" in agency_upper or "NASA" in agency_upper or "STUDY" in desc_upper or "R&D" in desc_upper:
-                category = "Research"
-            elif "EDUCATION" in agency_upper or "SCHOOL" in agency_upper or "TRAINING" in desc_upper:
-                category = "Education"
+                try:
+                    year = int(start_date.split("-")[0])
+                except Exception:
+                    year = 2024
+                    
+                agency_slug = awarding_agency.lower().replace(" ", "-").replace(",", "")
+                agency_id = f"A_{agency_slug}"
                 
-            title = description.strip()
-            if not title or len(title) < 5 or title.startswith("IGF::") or "::" in title:
-                title = f"{category} Support - {awarding_agency}"
-            
-            if agency_id not in agencies_map:
-                agencies_map[agency_id] = {
+                vendor_slug = recipient_name.lower().replace(" ", "-").replace(",", "").replace(".", "").replace("'", "")
+                vendor_id = f"V_{vendor_slug}"
+                
+                desc_upper = description.upper()
+                agency_upper = awarding_agency.upper()
+                
+                category = "Infrastructure"
+                if "DEFENSE" in agency_upper or "NAVY" in agency_upper or "ARMY" in agency_upper or "AIR FORCE" in agency_upper:
+                    category = "Defense"
+                elif "HEALTH" in agency_upper or "MEDIC" in agency_upper or "HUMAN SERVICES" in agency_upper:
+                    category = "Healthcare"
+                elif "IT" in desc_upper or "SOFTWARE" in desc_upper or "COMPUTER" in desc_upper or "CLOUD" in desc_upper or "TECHNOLOGY" in desc_upper:
+                    category = "IT Services"
+                elif "ENERGY" in agency_upper or "POWER" in agency_upper or "NUCLEAR" in agency_upper:
+                    category = "Energy"
+                elif "SCIENCE" in agency_upper or "RESEARCH" in agency_upper or "NASA" in agency_upper or "STUDY" in desc_upper or "R&D" in desc_upper:
+                    category = "Research"
+                elif "EDUCATION" in agency_upper or "SCHOOL" in agency_upper or "TRAINING" in desc_upper:
+                    category = "Education"
+                    
+                title = description.strip()
+                if not title or len(title) < 5 or title.startswith("IGF::") or "::" in title:
+                    title = f"{category} Support - {awarding_agency}"
+                
+                if agency_id not in agencies_map:
+                    agencies_map[agency_id] = {
+                        "agency_id": agency_id,
+                        "agency_name": awarding_agency,
+                        "agency_type": "Federal" if "DEPARTMENT" in agency_upper else "Independent",
+                        "annual_budget": amount * 5.0
+                    }
+                else:
+                    agencies_map[agency_id]["annual_budget"] += amount * 1.5
+                    
+                if vendor_id not in vendors_map:
+                    sam_data = fetch_from_sam_gov(recipient_name)
+                    hq = "Washington, DC"
+                    if sam_data and "entity" in sam_data:
+                        entity = sam_data["entity"]
+                        city = entity.get("physicalAddress", {}).get("city", "")
+                        state = entity.get("physicalAddress", {}).get("stateOrProvinceCode", "")
+                        if city and state:
+                            hq = f"{city}, {state}"
+                            
+                    vendors_map[vendor_id] = {
+                        "vendor_id": vendor_id,
+                        "vendor_name": recipient_name,
+                        "industry": "Government Contracting" if category == "Defense" else category,
+                        "headquarters": hq
+                    }
+                    
+                contracts.append({
+                    "contract_id": award_id,
                     "agency_id": agency_id,
-                    "agency_name": awarding_agency,
-                    "agency_type": "Federal" if "DEPARTMENT" in agency_upper else "Independent",
-                    "annual_budget": amount * 5.0
-                }
-            else:
-                agencies_map[agency_id]["annual_budget"] += amount * 1.5
-                
-            if vendor_id not in vendors_map:
-                sam_data = fetch_from_sam_gov(recipient_name)
-                hq = "Washington, DC"
-                if sam_data and "entity" in sam_data:
-                    entity = sam_data["entity"]
-                    city = entity.get("physicalAddress", {}).get("city", "")
-                    state = entity.get("physicalAddress", {}).get("stateOrProvinceCode", "")
-                    if city and state:
-                        hq = f"{city}, {state}"
-                        
-                vendors_map[vendor_id] = {
                     "vendor_id": vendor_id,
-                    "vendor_name": recipient_name,
-                    "industry": "Government Contracting" if category == "Defense" else category,
-                    "headquarters": hq
-                }
+                    "contract_title": title,
+                    "amount": int(amount),
+                    "year": year,
+                    "category": category,
+                    "status": "Active" if year >= 2024 else "Completed"
+                })
                 
-            contracts.append({
-                "contract_id": award_id,
-                "agency_id": agency_id,
-                "vendor_id": vendor_id,
-                "contract_title": title,
-                "amount": int(amount),
-                "year": year,
-                "category": category,
-                "status": "Active" if year >= 2024 else "Completed"
-            })
+            LIVE_DATA_CACHE["agencies"] = list(agencies_map.values())
+            LIVE_DATA_CACHE["vendors"] = list(vendors_map.values())
+            LIVE_DATA_CACHE["contracts"] = contracts
+            LIVE_DATA_CACHE["last_fetched"] = "now"
             
-        LIVE_DATA_CACHE["agencies"] = list(agencies_map.values())
-        LIVE_DATA_CACHE["vendors"] = list(vendors_map.values())
-        LIVE_DATA_CACHE["contracts"] = contracts
-        LIVE_DATA_CACHE["last_fetched"] = "now"
-        
-        logger.info(f"Successfully loaded live data from USAspending.gov: {len(contracts)} contracts")
-        return LIVE_DATA_CACHE
-        
-    except Exception as e:
-        logger.error(f"Error fetching live data from USAspending.gov: {e}. Falling back to synthetic dataset.")
-        return {
-            "contracts": CONTRACTS,
-            "vendors": VENDORS,
-            "agencies": AGENCIES
-        }
+            logger.info(f"Successfully loaded live data from USAspending.gov: {len(contracts)} contracts")
+            return LIVE_DATA_CACHE
+            
+        except Exception as e:
+            logger.error(f"Error fetching live data from USAspending.gov: {e}. Falling back to synthetic dataset.")
+            LIVE_DATA_CACHE["contracts"] = CONTRACTS
+            LIVE_DATA_CACHE["vendors"] = VENDORS
+            LIVE_DATA_CACHE["agencies"] = AGENCIES
+            LIVE_DATA_CACHE["last_fetched"] = "fallback"
+            return LIVE_DATA_CACHE
 
 # ─── Helpers ───
 def _filter_contracts(
