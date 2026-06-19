@@ -104,8 +104,8 @@ export default function Charts({ analytics, loading }: ChartsProps) {
                    tick={{ fill: "#64748b", fontSize: 10 }} />
             <Tooltip content={<CustomTooltip />} />
             <Line type="monotone" dataKey="total" name="Spending"
-                  stroke="#3b82f6" strokeWidth={3} dot={{ r: 5, fill: "#3b82f6" }}
-                  activeDot={{ r: 7, fill: "#60a5fa" }} />
+                  stroke="#06b6d4" strokeWidth={3} dot={{ r: 5, fill: "#06b6d4" }}
+                  activeDot={{ r: 7, fill: "#22d3ee" }} />
           </LineChart>
         </ResponsiveContainer>
       </div>

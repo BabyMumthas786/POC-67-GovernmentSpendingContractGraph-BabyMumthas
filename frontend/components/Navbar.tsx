@@ -34,13 +34,13 @@ export default function Navbar({ onSearch, onRefresh }: NavbarProps) {
       <div className="flex items-center gap-3">
         <div
           className="w-9 h-9 rounded-lg flex items-center justify-center relative"
-          style={{ background: "var(--gradient-blue)" }}
+          style={{ background: "var(--gradient-ambient)" }}
         >
           {/* Animated glow ring */}
           <div
             className="absolute inset-0 rounded-lg"
             style={{
-              background: "var(--gradient-blue)",
+              background: "var(--gradient-ambient)",
               opacity: 0.4,
               filter: "blur(6px)",
               animation: "pulse 3s infinite",

@@ -9,12 +9,12 @@ interface MetricCardsProps {
 }
 
 const METRICS = [
-  { key: "total_spending", label: "Total Spending", icon: "💰", format: "currency" },
-  { key: "total_contracts", label: "Total Contracts", icon: "📄", format: "number" },
-  { key: "total_agencies", label: "Total Agencies", icon: "🏛️", format: "number" },
-  { key: "total_vendors", label: "Total Vendors", icon: "🏢", format: "number" },
-  { key: "average_contract_value", label: "Avg Contract Value", icon: "📊", format: "currency" },
-  { key: "largest_contract", label: "Largest Contract", icon: "🏆", format: "currency" },
+  { key: "total_spending", label: "Total Spending", icon: "💰", format: "currency", gradient: "var(--gradient-blue)" },
+  { key: "total_contracts", label: "Total Contracts", icon: "📄", format: "number", gradient: "var(--gradient-cyan)" },
+  { key: "total_agencies", label: "Total Agencies", icon: "🏛️", format: "number", gradient: "var(--gradient-indigo)" },
+  { key: "total_vendors", label: "Total Vendors", icon: "🏢", format: "number", gradient: "var(--gradient-green)" },
+  { key: "average_contract_value", label: "Avg Contract Value", icon: "📊", format: "currency", gradient: "var(--gradient-purple)" },
+  { key: "largest_contract", label: "Largest Contract", icon: "🏆", format: "currency", gradient: "var(--gradient-ambient)" },
 ] as const;
 
 export default function MetricCards({ analytics, loading }: MetricCardsProps) {
@@ -61,7 +61,7 @@ export default function MetricCards({ analytics, loading }: MetricCardsProps) {
           ? formatCurrency(value)
           : formatNumber(value);
         return (
-          <div key={m.key} className="metric-card">
+          <div key={m.key} className="metric-card" style={{ '--metric-gradient': m.gradient } as React.CSSProperties}>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-lg">{m.icon}</span>
             </div>
@@ -73,3 +73,4 @@ export default function MetricCards({ analytics, loading }: MetricCardsProps) {
     </div>
   );
 }
+

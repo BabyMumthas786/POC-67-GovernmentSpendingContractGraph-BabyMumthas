@@ -20,9 +20,9 @@ export function formatFullCurrency(value: number): string {
 }
 
 export const CHART_COLORS = [
-  "#3b82f6", "#10b981", "#f59e0b", "#ef4444",
-  "#8b5cf6", "#06b6d4", "#ec4899", "#84cc16",
-  "#f97316", "#6366f1",
+  "#3b82f6", "#06b6d4", "#818CF8", "#10b981",
+  "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899",
+  "#84cc16", "#f97316", "#6366f1",
 ];
 
 export const CATEGORY_COLORS: Record<string, string> = {
@@ -30,7 +30,7 @@ export const CATEGORY_COLORS: Record<string, string> = {
   "Defense": "#ef4444",
   "Healthcare": "#10b981",
   "Education": "#f59e0b",
-  "Infrastructure": "#8b5cf6",
+  "Infrastructure": "#818CF8",
   "Energy": "#06b6d4",
   "Research": "#ec4899",
 };

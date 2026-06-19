@@ -15,7 +15,7 @@ export default function Footer() {
           <div className="flex items-center gap-3">
             <div
               className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ background: "var(--gradient-blue)" }}
+              style={{ background: "var(--gradient-ambient)" }}
             >
               <svg
                 width="14"
