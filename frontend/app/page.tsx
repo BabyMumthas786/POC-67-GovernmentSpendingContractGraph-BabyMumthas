@@ -131,18 +131,6 @@ export default function Dashboard() {
 
       {/* Main layout */}
       <div className="flex flex-1">
-        {/* Sidebar */}
-        <Sidebar
-          agencies={agencies}
-          vendors={vendors}
-          filters={filters}
-          onFilterChange={handleFilterChange}
-          isOpen={sidebarOpen}
-          onToggle={() => setSidebarOpen(!sidebarOpen)}
-          searchQuery={searchQuery}
-          onSearchChange={handleSearch}
-        />
-
         {/* Main content */}
         <main className="flex-1 px-4 py-5 lg:px-6 lg:py-6 overflow-x-hidden">
           {/* Mobile filter toggle */}
@@ -226,6 +214,18 @@ export default function Dashboard() {
             />
           </section>
         </main>
+
+        {/* Sidebar (right side) */}
+        <Sidebar
+          agencies={agencies}
+          vendors={vendors}
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          isOpen={sidebarOpen}
+          onToggle={() => setSidebarOpen(!sidebarOpen)}
+          searchQuery={searchQuery}
+          onSearchChange={handleSearch}
+        />
       </div>
 
       {/* Footer */}

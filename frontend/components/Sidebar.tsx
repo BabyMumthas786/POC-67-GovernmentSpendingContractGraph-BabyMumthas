@@ -71,7 +71,7 @@ export default function Sidebar({
         className={`sidebar w-64 p-4 flex flex-col gap-1 overflow-y-auto
           fixed lg:relative top-[56px] lg:top-0 z-40
           transition-transform duration-300
-          ${isOpen ? "open translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+          ${isOpen ? "open translate-x-0" : "translate-x-full lg:translate-x-0"}`}
         id="sidebar-filters"
       >
         <div className="flex items-center justify-between mb-4">

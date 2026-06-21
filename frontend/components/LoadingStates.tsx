@@ -20,7 +20,7 @@ export function CardSkeleton() {
 
 export function SidebarSkeleton() {
   return (
-    <div className="w-64 p-4 space-y-4 bg-slate-900 border-r border-slate-800 h-full">
+    <div className="w-64 p-4 space-y-4 bg-slate-900 border-l border-slate-800 h-full">
       <Skeleton className="h-6 w-1/2" />
       {Array.from({ length: 5 }).map((_, i) => (
         <div key={i} className="space-y-2">
