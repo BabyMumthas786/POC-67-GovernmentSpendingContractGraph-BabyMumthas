@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import type { Agency, Vendor, Filters } from "@/lib/types";
+import InsightsPanel from "./InsightsPanel";
+import ControlPanel from "./ControlPanel";
 
 interface SidebarProps {
   agencies: Agency[];
@@ -68,15 +70,15 @@ export default function Sidebar({
       )}
 
       <aside
-        className={`sidebar w-64 p-4 flex flex-col gap-1 overflow-y-auto
-          fixed lg:relative top-[56px] lg:top-0 z-40
+        className={`sidebar w-80 p-4 flex flex-col gap-1 overflow-y-auto
+          fixed lg:sticky top-[56px] lg:self-start lg:h-[calc(100vh-56px)] z-40
           transition-transform duration-300
           ${isOpen ? "open translate-x-0" : "translate-x-full lg:translate-x-0"}`}
         id="sidebar-filters"
       >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xs font-bold uppercase tracking-widest"
-              style={{ color: "var(--text-muted)" }}>
+            style={{ color: "var(--text-muted)" }}>
             Filters
           </h2>
           {hasFilters && (
@@ -242,6 +244,12 @@ export default function Sidebar({
             </p>
           </div>
         )}
+
+        {/* Intelligence Panels */}
+        <div className="mt-4 flex flex-col gap-4 pt-4" style={{ borderTop: "1px solid var(--border-primary)" }}>
+          <InsightsPanel />
+          <ControlPanel />
+        </div>
       </aside>
     </>
   );

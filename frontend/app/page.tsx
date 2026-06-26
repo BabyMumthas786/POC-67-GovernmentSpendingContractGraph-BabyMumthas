@@ -8,8 +8,6 @@ import MetricCards from "@/components/MetricCards";
 import Charts from "@/components/Charts";
 import Timeline from "@/components/Timeline";
 import ContractDrawer from "@/components/ContractDrawer";
-import InsightsPanel from "@/components/InsightsPanel";
-import ControlPanel from "@/components/ControlPanel";
 import DownloadPanel from "@/components/DownloadPanel";
 import Footer from "@/components/Footer";
 import type { Agency, Vendor, Contract, GraphData, Analytics, Filters, GraphEdge } from "@/lib/types";
@@ -49,7 +47,7 @@ export default function Dashboard() {
         setVendors(vendorData);
       } catch (err) {
         console.error("Failed to load reference data:", err);
-        setError("Failed to connect to backend. Please ensure the FastAPI server is running on port 8000.");
+        setError("Failed to connect to backend. Please ensure the FastAPI server is running on port 8001.");
       }
     };
     loadReferenceData();
@@ -203,10 +201,8 @@ export default function Dashboard() {
             <Charts analytics={analytics} loading={loading} />
           </section>
 
-          {/* Insights + Control + Downloads */}
-          <section className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-5">
-            <InsightsPanel />
-            <ControlPanel />
+          {/* Downloads */}
+          <section className="mb-5">
             <DownloadPanel
               graphData={graphData}
               contracts={contracts}

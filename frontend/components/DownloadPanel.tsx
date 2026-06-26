@@ -101,7 +101,7 @@ export default function DownloadPanel({
   return (
     <div className="insight-panel" id="download-panel">
       <h3>📥 Export Data</h3>
-      <div className="space-y-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {downloads.map((dl) => (
           <button
             key={dl.label}
